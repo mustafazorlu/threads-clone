@@ -21,7 +21,13 @@ const UserHeader = () => {
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
-            toast({ description: "copied" });
+            toast({
+                description: "Copied",
+                status: "success",
+                duration: "2000",
+                isClosable: true,
+                title: "Success",
+            });
         });
     };
     return (
@@ -48,7 +54,10 @@ const UserHeader = () => {
                     <Avatar
                         name="Mark Zuckerberg"
                         src="/zuck-avatar.webp"
-                        size={"xl"}
+                        size={{
+                            base: "md",
+                            md: "xl",
+                        }}
                     />
                 </Box>
             </Flex>
@@ -88,6 +97,26 @@ const UserHeader = () => {
                             </Portal>
                         </Menu>
                     </Box>
+                </Flex>
+            </Flex>
+            <Flex w={"full"}>
+                <Flex
+                    flex={1}
+                    borderBottom={"1.5px solid white"}
+                    justifyContent={"center"}
+                    pb="3"
+                    cursor={"pointer"}
+                >
+                    <Text fontWeight={"bold"}>Threads</Text>
+                </Flex>
+                <Flex
+                    flex={1}
+                    borderBottom={"1.5px solid white"}
+                    justifyContent={"center"}
+                    pb="3"
+                    cursor={"pointer"}
+                >
+                    <Text fontWeight={"bold"}>Replies</Text>
                 </Flex>
             </Flex>
         </VStack>
