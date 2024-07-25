@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { BsHeart, BsHeartPulse } from "react-icons/bs";
+import { BsHeart } from "react-icons/bs";
 
 const Actions = ({ liked, setLiked }) => {
     return (
