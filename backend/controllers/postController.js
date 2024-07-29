@@ -29,7 +29,7 @@ const createPost = async (req, res) => {
                 .json({ message: "text must be less than 500 characters" });
         }
 
-        const newPost = new Post.create({
+        const newPost = new Post({
             postedBy,
             text,
             img,
@@ -39,8 +39,43 @@ const createPost = async (req, res) => {
 
         res.status(200).json({ message: "success", newPost });
     } catch (error) {
-        req.status(400).json({ message: "bir hata oluştu" });
+        res.status(400).json({ message: "bir hata oluştu" });
     }
 };
 
-export { createPost };
+const getPost = async (req, res) => {
+    console.log(req.params.id);
+    try {
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(400).json({ message: "post bulunamadı try" });
+        }
+
+        res.status(200).json({ post });
+    } catch (error) {
+        res.status(400).json({ message: "post bulunamadı catch" });
+    }
+};
+
+const deletePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(400).json({ message: "post bulunamadı try" });
+        }
+        if (post.postedBy.toString() !== req.user._id.toString()) {
+            return res
+                .status(401)
+                .json({ message: "unauthorized to delete post" });
+        }
+
+        await Post.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({ message: "silindi" });
+    } catch (error) {
+        res.status(400).json({ message: "silinemedi" });
+    }
+};
+
+export { createPost, getPost, deletePost };
