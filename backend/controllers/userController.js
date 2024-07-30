@@ -102,7 +102,7 @@ const followUnFollowUser = async (req, res) => {
         const userToModify = await User.findById(id); //current user
         const currentUser = await User.findById(req.user._id); //istek atılan kullanıcı
 
-        if (id === req.user._id) {
+        if (id === req.user._id.toString()) {
             //bu iki değer aynıysa
             return res
                 .status(400)
@@ -120,7 +120,7 @@ const followUnFollowUser = async (req, res) => {
             await User.findByIdAndUpdate(id, {
                 $pull: { followers: req.user._id },
             });
-            await User.findByIdAndUpdate(req.user_.id, {
+            await User.findByIdAndUpdate(req.user._id, {
                 $pull: { following: id },
             });
             res.status(200).json({ message: "user unfollowed succesfully" });
@@ -128,10 +128,10 @@ const followUnFollowUser = async (req, res) => {
             await User.findByIdAndUpdate(id, {
                 $push: { followers: req.user._id },
             });
-            await User.findByIdAndUpdate(req.user_.id, {
+            await User.findByIdAndUpdate(req.user._id, {
                 $push: { following: id },
             });
-            res.status(200).json({ message: "user followed succesfully" });
+            res.status(200).json({ message: "User followed successfully" });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
