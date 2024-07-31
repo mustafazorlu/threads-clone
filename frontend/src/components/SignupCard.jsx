@@ -12,6 +12,7 @@ import {
     Stack,
     Text,
     useColorModeValue,
+    useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
@@ -23,13 +24,42 @@ const SignupCard = () => {
     const [showPassword, setShowPassword] = useState(false);
     const setAuthScreen = useSetRecoilState(authScreenAtom);
 
+    const toast = useToast();
+
+    const [inputs, setInputs] = useState({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+    });
+
     const handleSignup = async () => {
         try {
-            
+            const res = await fetch("/api/users/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(inputs),
+            });
+            const data = await res.json();
+            console.log(data);
+
+            if (data.error) {
+                toast({
+                    title: "Error",
+                    description: data.error,
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                return;
+            }
+
+            localStorage.setItem("user-threads", JSON.stringify(data));
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
+
     return (
         <Flex align={"center"} justify={"center"}>
             <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
@@ -49,24 +79,58 @@ const SignupCard = () => {
                             <Box>
                                 <FormControl isRequired>
                                     <FormLabel>Full name</FormLabel>
-                                    <Input type="text" />
+                                    <Input
+                                        type="text"
+                                        onChange={(e) =>
+                                            setInputs({
+                                                ...inputs,
+                                                name: e.target.value,
+                                            })
+                                        }
+                                        value={inputs.name}
+                                    />
                                 </FormControl>
                             </Box>
                             <Box>
                                 <FormControl isRequired>
                                     <FormLabel>Username</FormLabel>
-                                    <Input type="text" />
+                                    <Input
+                                        type="text"
+                                        onChange={(e) =>
+                                            setInputs({
+                                                ...inputs,
+                                                username: e.target.value,
+                                            })
+                                        }
+                                        value={inputs.username}
+                                    />
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl isRequired>
                             <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
+                            <Input
+                                type="email"
+                                onChange={(e) =>
+                                    setInputs({
+                                        ...inputs,
+                                        email: e.target.value,
+                                    })
+                                }
+                                value={inputs.email}
+                            />
                         </FormControl>
                         <FormControl isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
                                 <Input
+                                    onChange={(e) =>
+                                        setInputs({
+                                            ...inputs,
+                                            password: e.target.value,
+                                        })
+                                    }
+                                    value={inputs.password}
                                     type={showPassword ? "text" : "password"}
                                 />
                                 <InputRightElement h={"full"}>

@@ -11,11 +11,11 @@ const getUserProfile = async (req, res) => {
             .select("-updatedAt");
 
         if (!user)
-            return res.status(400).json({ message: "böyle bir kullanıcı yok" });
+            return res.status(400).json({ error: "böyle bir kullanıcı yok" });
 
         res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -26,7 +26,7 @@ const signupUser = async (req, res) => {
         const user = await User.findOne({ $or: [{ email }, { username }] });
 
         if (user) {
-            return res.status(400).json({ message: "kullanıcı zaten var" });
+            return res.status(400).json({ error: "kullanıcı zaten var" });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -50,12 +50,12 @@ const signupUser = async (req, res) => {
                 password: newUser.password,
             });
         } else {
-            res.status(400).json({ message: "geçersiz kullanıcı" });
+            res.status(400).json({ error: "geçersiz kullanıcı" });
         }
 
         await newUser.save();
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -71,7 +71,7 @@ const loginUser = async (req, res) => {
         );
 
         if (!user || !isPasswordCorrect) {
-            return res.status(400).json({ message: "Invalid" });
+            return res.status(400).json({ error: "Invalid" });
         }
 
         generateTokenAndSetCookie(user._id, res);
@@ -83,7 +83,7 @@ const loginUser = async (req, res) => {
             username: user.username,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -92,7 +92,7 @@ const logoutUser = async (req, res) => {
         res.cookie("jwt", "", { maxAge: 1 });
         res.status(200).json({ message: "user logged out succesfully" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -111,7 +111,7 @@ const followUnFollowUser = async (req, res) => {
 
         if (!userToModify || !currentUser) {
             //kullanıcı yok
-            return res.status(400).json({ message: "user not found" });
+            return res.status(400).json({ error: "user not found" });
         }
 
         const isFollowing = currentUser.following.includes(id); //şuan ki kullanıcının içerisinde current user id varsa isfallowing true
@@ -134,7 +134,7 @@ const followUnFollowUser = async (req, res) => {
             res.status(200).json({ message: "User followed successfully" });
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -146,7 +146,7 @@ const updateUser = async (req, res) => {
         let user = await User.findById(userId);
 
         if (!user)
-            return res.status(400).json({ message: "böyle bir kullanıcı yok" });
+            return res.status(400).json({ error: "böyle bir kullanıcı yok" });
 
         if (password) {
             const salt = await bcrypt.genSalt(10);
@@ -164,7 +164,7 @@ const updateUser = async (req, res) => {
 
         res.status(200).json({ message: "profile updated", user });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ error: error.message });
     }
 };
 
