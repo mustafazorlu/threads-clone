@@ -8,21 +8,22 @@ const LogoutButton = () => {
     const showToast = useShowToast();
     const handleLogout = async () => {
         try {
-            const res = fetch("/api/users/logout", {
+            const res = await fetch("/api/users/logout", {
                 method: "POST",
-                headers: { "Content-Type:": "application/json" },
+                headers: { "Content-Type": "application/json" },
             });
             const data = await res.json();
             console.log(data);
 
             if (data.error) {
                 showToast("Error", data.error, "error");
-                return
+                return;
             }
             localStorage.removeItem("user-threads");
             setUser(null);
         } catch (error) {
             console.log(error);
+            //3:59:13
         }
     };
     return (

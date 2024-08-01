@@ -8,6 +8,7 @@ import AuthPage from "./pages/AuthPage";
 import userAtom from "./atoms/userAtom";
 import { useRecoilValue } from "recoil";
 import HomePage from "./pages/HomePage";
+import LogoutButton from "./components/LogoutButton";
 
 function App() {
     const user = useRecoilValue(userAtom);
