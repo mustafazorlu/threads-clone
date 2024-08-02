@@ -9,15 +9,26 @@ import {
     Input,
     Stack,
     useColorModeValue,
-    // HStack,
     Avatar,
-    AvatarBadge,
-    IconButton,
     Center,
 } from "@chakra-ui/react";
-import { SmallCloseIcon } from "@chakra-ui/icons";
+import { useRef, useState } from "react";
+import { useRecoilState } from "recoil";
+import userAtom from "../atoms/userAtom";
+import usePreviewImg from "../hooks/usePreviewImg";
 
 const UpdateProfilePage = () => {
+    const [user, setUser] = useRecoilState(userAtom);
+    const { handleImageChange, imgUrl } = usePreviewImg();
+    const [inputs, setInputs] = useState({
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        password: "",
+    });
+    const fileRef = useRef(null);
+    console.log(user, "user is here");
     return (
         <Flex
             minH={"80vh"}
@@ -42,37 +53,97 @@ const UpdateProfilePage = () => {
                     <FormLabel>User Icon</FormLabel>
                     <Stack direction={["column", "row"]} spacing={6}>
                         <Center>
-                            <Avatar size="xl" src="https://bit.ly/sage-adebayo" />
-                                
-                           
+                            <Avatar size="xl" src={imgUrl || user.profilePic} />
                         </Center>
                         <Center w="full">
-                            <Button w="full">Change Avatar</Button>
+                            <Button
+                                w="full"
+                                onClick={() => fileRef.current.click()}
+                            >
+                                Change Avatar
+                            </Button>
+                            <Input
+                                type="file"
+                                hidden
+                                ref={fileRef}
+                                onChange={handleImageChange}
+                            />
                         </Center>
                     </Stack>
                 </FormControl>
-                <FormControl id="userName" isRequired>
-                    <FormLabel>User name</FormLabel>
+                <FormControl isRequired>
+                    <FormLabel>Full name</FormLabel>
                     <Input
-                        placeholder="UserName"
+                        placeholder="John Doe"
                         _placeholder={{ color: "gray.500" }}
                         type="text"
+                        value={inputs.name}
+                        onChange={(e) =>
+                            setInputs({
+                                ...inputs,
+                                name: e.target.value,
+                            })
+                        }
                     />
                 </FormControl>
-                <FormControl id="email" isRequired>
+                <FormControl isRequired>
+                    <FormLabel>User name</FormLabel>
+                    <Input
+                        placeholder="johndoe"
+                        _placeholder={{ color: "gray.500" }}
+                        type="text"
+                        value={inputs.username}
+                        onChange={(e) =>
+                            setInputs({
+                                ...inputs,
+                                username: e.target.value,
+                            })
+                        }
+                    />
+                </FormControl>
+                <FormControl isRequired>
                     <FormLabel>Email address</FormLabel>
                     <Input
                         placeholder="your-email@example.com"
                         _placeholder={{ color: "gray.500" }}
                         type="email"
+                        value={inputs.email}
+                        onChange={(e) =>
+                            setInputs({
+                                ...inputs,
+                                email: e.target.value,
+                            })
+                        }
                     />
                 </FormControl>
-                <FormControl id="password" isRequired>
+                <FormControl isRequired>
+                    <FormLabel>Bio</FormLabel>
+                    <Input
+                        placeholder="bio.."
+                        _placeholder={{ color: "gray.500" }}
+                        type="email"
+                        value={inputs.bio}
+                        onChange={(e) =>
+                            setInputs({
+                                ...inputs,
+                                bio: e.target.value,
+                            })
+                        }
+                    />
+                </FormControl>
+                <FormControl isRequired>
                     <FormLabel>Password</FormLabel>
                     <Input
                         placeholder="password"
                         _placeholder={{ color: "gray.500" }}
                         type="password"
+                        value={inputs.password}
+                        onChange={(e) =>
+                            setInputs({
+                                ...inputs,
+                                password: e.target.value,
+                            })
+                        }
                     />
                 </FormControl>
                 <Stack spacing={6} direction={["column", "row"]}>
@@ -87,11 +158,11 @@ const UpdateProfilePage = () => {
                         Cancel
                     </Button>
                     <Button
-                        bg={"blue.400"}
+                        bg={"green.400"}
                         color={"white"}
                         w="full"
                         _hover={{
-                            bg: "blue.500",
+                            bg: "green.500",
                         }}
                     >
                         Submit

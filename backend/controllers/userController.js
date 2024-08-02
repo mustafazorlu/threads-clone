@@ -48,6 +48,8 @@ const signupUser = async (req, res) => {
                 email: newUser.email,
                 username: newUser.username,
                 password: newUser.password,
+                bio: newUser.bio,
+                profilePic: newUser.profilePic,
             });
         } else {
             res.status(400).json({ error: "geçersiz kullanıcı" });
@@ -81,6 +83,8 @@ const loginUser = async (req, res) => {
             name: user.name,
             email: user.email,
             username: user.username,
+            bio: user.bio,
+            profilePic: user.profilePic,
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
