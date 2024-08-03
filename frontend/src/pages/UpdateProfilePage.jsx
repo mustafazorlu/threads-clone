@@ -19,39 +19,49 @@ import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 
 const UpdateProfilePage = () => {
+    //4:42:55 de kaldık 3 ağustos
+    //5:01:50 de kaldık 3 ağustos
     const [user, setUser] = useRecoilState(userAtom);
     const { handleImageChange, imgUrl } = usePreviewImg();
+    const [updating, setUpdating] = useState(false);
     const [inputs, setInputs] = useState({
         name: user.name,
         username: user.username,
         email: user.email,
-        bio: user.bio || "",
+        bio: user.bio,
         password: "",
     });
     const fileRef = useRef(null);
     const showToast = useShowToast();
 
+    console.log(user);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const res = await fetch(`/api/users/update/${user._id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
-        });
-        const data = await res.json();
-
-        if (data.error) {
-            showToast("Error", data.error, "error");
-        }
-
-        showToast("Success", data.message, "success");
-        setUser(data);
-        localStorage.setItem("user-threads", JSON.stringify(data));
-
+        if (updating) return;
+        setUpdating(true);
         try {
-            console.log(inputs);
+            const res = await fetch(`/api/users/update/${user._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...inputs, profilePic: imgUrl }),
+            });
+            const data = await res.json();
+
+            if (data.error) {
+                showToast("Error", data.error, "error");
+                return;
+            }
+
+            showToast("Success", data.message, "success");
+            setUser(data);
+            localStorage.setItem("user-threads", JSON.stringify(data));
+
+            console.log(data);
         } catch (error) {
             showToast("Error", error, "error");
+        } finally {
+            setUpdating(false);
         }
     };
 
@@ -198,6 +208,7 @@ const UpdateProfilePage = () => {
                                 bg: "green.500",
                             }}
                             type="submit"
+                            isLoading={updating}
                         >
                             Submit
                         </Button>
