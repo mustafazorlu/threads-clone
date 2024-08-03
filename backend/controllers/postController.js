@@ -7,6 +7,8 @@ const createPost = async (req, res) => {
         const { postedBy, text } = req.body;
         let { img } = req.body;
 
+        console.log(postedBy, text);
+
         if (!postedBy || !text) {
             return res
                 .status(400)

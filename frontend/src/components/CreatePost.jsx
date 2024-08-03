@@ -33,7 +33,7 @@ const CreatePost = () => {
     const imageRef = useRef();
     const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
     const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
-    const user = useRecoilValue(userAtom);
+    const { user } = useRecoilValue(userAtom);
     const showToast = useShowToast();
     const [loading, setLoading] = useState(false);
     console.log(user);
@@ -54,7 +54,6 @@ const CreatePost = () => {
     console.log(postText);
 
     const handleCreatePost = async () => {
-        
         setLoading(true);
         try {
             const res = await fetch("/api/posts/create", {
