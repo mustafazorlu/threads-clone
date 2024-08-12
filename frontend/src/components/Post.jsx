@@ -3,10 +3,26 @@ import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
 import { BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import Actions from "./Actions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useShowToast from "../hooks/useShowToast";
 
-const UserPost = ({ likes, replies, postTitle, postImg }) => {
+const Post = ({ post, postedBy }) => {
     const [liked, setLiked] = useState(false);
+    const showToast = useShowToast();
+
+    //5:49:04
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const getUser = await fetch(
+                    "/api/users/profile/" + postedBy
+                );
+            } catch (error) {
+                showToast("Error", error, "error");
+            }
+        };
+    });
     return (
         <Link>
             <Flex gap={3} mb={4} py={5}>
@@ -68,15 +84,15 @@ const UserPost = ({ likes, replies, postTitle, postImg }) => {
                             <BsThreeDots />
                         </Flex>
                     </Flex>
-                    <Text fontSize={"sm"}>{postTitle}</Text>
-                    {postImg && (
+                    <Text fontSize={"sm"}>{post.text}</Text>
+                    {post.postImg && (
                         <Box
                             borderRadius={6}
                             overflow={"hidden"}
                             border={"1px solid"}
                             borderColor={"gray.light"}
                         >
-                            <Image src={postImg} />
+                            <Image src={post.img} />
                         </Box>
                     )}
 
@@ -84,7 +100,7 @@ const UserPost = ({ likes, replies, postTitle, postImg }) => {
 
                     <Flex gap={2} alignItems={"center"}>
                         <Text color={"gray.light"} fontSize={"sm"}>
-                            {replies} replies
+                            {post.replies.length} replies
                         </Text>
                         <Box
                             w={0.5}
@@ -93,7 +109,7 @@ const UserPost = ({ likes, replies, postTitle, postImg }) => {
                             bg={"gray.light"}
                         ></Box>
                         <Text color={"gray.light"} fontSize={"sm"}>
-                            {likes} likes
+                            {post.likes.length} likes
                         </Text>
                     </Flex>
                 </Flex>
@@ -102,4 +118,4 @@ const UserPost = ({ likes, replies, postTitle, postImg }) => {
     );
 };
 
-export default UserPost;
+export default Post;

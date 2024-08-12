@@ -55,6 +55,7 @@ const CreatePost = () => {
 
     const handleCreatePost = async () => {
         setLoading(true);
+        //5:25:20 de kaldık
         try {
             const res = await fetch("/api/posts/create", {
                 method: "POST",
